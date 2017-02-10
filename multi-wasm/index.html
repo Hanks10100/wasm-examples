@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Simple Wasm Example</title>
+  <title>Multi Wasm Example</title>
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <meta name="apple-touch-fullscreen" content="yes" />
@@ -10,7 +10,7 @@
 </head>
 
 <body>
-  <h1>Simple Wasm Example</h1>
+  <h1>Multi Wasm Example</h1>
 
   <script>
     function loadModules (modules) {
@@ -32,6 +32,8 @@
 
         console.log('2^2 =', square(2))
         console.log('3^2 =', square(3))
+
+        console.log('(7 + 1)^2 =', square(inc(7)))
       })
   </script>
 </body>
