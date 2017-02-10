@@ -13,15 +13,15 @@
   <h1>Simple Wasm Example</h1>
 
   <script>
-    function getModule (url) {
+    function loadWebAssembly (url) {
       return fetch(url)
         .then(response => response.arrayBuffer())
         .then(WebAssembly.instantiate)
-        .then(res => res.instance.exports)
+        .then(mod => mod.instance)
     }
 
-    getModule('math.wasm').then(math => {
-      const { add, square } = math
+    loadWebAssembly('math.wasm').then(instance => {
+      const { add, square } = instance.exports
 
       console.log('2 + 4 =', add(2, 4))
       console.log('7 + 5 =', add(7, 5))
