@@ -1,8 +1,8 @@
-# Using asm.js to Generate wasm
+# An Benchmark Example for WebAssembly
 
 ## Introduction
 
-An Benchmark Example for WebAssembly. The source code is from [The Computer Language Benchmarks Game](http://benchmarksgame.alioth.debian.org/).
+The source code is from [The Computer Language Benchmarks Game](http://benchmarksgame.alioth.debian.org/).
 
 > TODO: write more.
 

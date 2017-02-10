@@ -1,4 +1,4 @@
-# Using asm.js to Generate wasm
+# Use multiple wasm files
 
 ## Introduction
 
