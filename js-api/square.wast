@@ -1,0 +1,1 @@
+(module  (export "square" (func $square))  (func $output (import "imports" "output") (param i32))  (func $print (export "print")    i32.const 2333    call $output  )  (func $square (param $x i32) (result i32)    (call $output (get_local $x))    (return      (i32.mul        (get_local $x)        (get_local $x)      )    )  ))
