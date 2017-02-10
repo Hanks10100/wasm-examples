@@ -13,7 +13,7 @@ This is a very simple example of using asm.js to generate wasm binary file.
 
 The `math.js` exports two methods: `add` and `square`.
 
-In the `index.html`，The `loadWebAssembly` method takes a url of `.wasm` file and convert to a WebAssembly Instance.
+In the `index.html`, the `loadWebAssembly` method takes a url of `.wasm` file and convert to a WebAssembly Instance.
 
 ## Preview
 
