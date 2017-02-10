@@ -25,6 +25,6 @@ In the `index.html`, the `loadWebAssembly` method takes a url of `.wasm` file an
 3. Run `./build.sh`.
 
 ```
-    Emscripten
-math.c  ->  math.wasm
+       Emscripten
+math.c   ----->   math.wasm
 ```

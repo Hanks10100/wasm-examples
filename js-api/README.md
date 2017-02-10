@@ -1,4 +1,4 @@
-# Using asm.js to Generate wasm
+# Using javascript API in wasm
 
 ## Introduction
 
@@ -23,6 +23,6 @@ In this example, an `importObject` was passed to `loadWebAssembly` method. In th
 3. Run `./build.sh`.
 
 ```
-            WABT
-square.wast  ->  square.wasm
+             WABT
+square.wast  --->  square.wasm
 ```

@@ -16,7 +16,7 @@ This example has two `.wasm` binary files.
 3. Run `./build.sh`.
 
 ```
-        Binaryen           WABT
-inc.js     ->   inc.wast    ->   inc.wasm
-squire.js  ->  squire.wast  ->  squire.wasm
+         Binaryen             WABT
+inc.js     --->   inc.wast    --->   inc.wasm
+squire.js  --->  squire.wast  --->  squire.wasm
 ```

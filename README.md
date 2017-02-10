@@ -1,4 +1,4 @@
-# Web Assembly Examples
+# WebAssembly Examples
 
 ## Background
 
@@ -16,5 +16,6 @@ Each folder has a README inside. Here is an index:
 
 + [simple](./simple/): A simple example using asm.js.
 + [cpp](./cpp/): A simple example using C/C++.
++ [multi-wasm](./multi-wasm/): Using multiple wasm files.
 + [js-api](./js-api/): Call javascript API in wasm.
 + [nbody](./nbody/): Performance test (using C).
