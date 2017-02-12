@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Fallback Example</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-touch-fullscreen" content="yes" />
+  <meta name="format-detection" content="telephone=no, email=no" />
+</head>
+
+<body>
+  <h1>Fibonacci Sequence</h1>
+  <h2 id="summary"></h2>
+  <div id="output"></div>
+
+  <script>
+    // const summary = document.getElementById('summary')
+    // const output = document.getElementById('output')
+
+    function load (filename) {
+      if (typeof WebAssembly !== 'undefined') {
+        summary.innerHTML = 'Run WebAssembly'
+        return fetch(`${filename}.wasm`)
+          .then(response => response.arrayBuffer())
+          .then(WebAssembly.instantiate)
+          .then(module => module.instance)
+      }
+
+      summary.innerHTML = 'Run asm.js fallback'
+      return fetch(`${filename}.js`)
+        .then(response => response.text())
+        .then(code => new Function(`return (${code})()`))
+        .then(factory => ({ exports: factory() }))
+    }
+
+    load('./fib').then(instance => {
+      const { fib } = instance.exports
+      const result = []
+
+      const beg = performance.now()
+      for (let i = 0; i <= 35; ++i) {
+        result[i] = fib(i)
+      }
+      const end = performance.now()
+
+      summary.innerHTML += ` (${end - beg} ms)`
+      result.forEach((value, index) => {
+        output.innerHTML += `<div>fib(${index}) = ${value}</div>`
+      })
+    })
+  </script>
+</body>
+</html>
