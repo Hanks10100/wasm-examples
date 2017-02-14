@@ -32,7 +32,10 @@
     }
 
     var importObject = {
-      imports: {
+      objects: {
+        count: 2333
+      },
+      methods: {
         output (message) {
           console.log('------------> ', message)
           return message
@@ -42,8 +45,6 @@
 
     loadWebAssembly('square.wasm', importObject).then(instance => {
       const { print, square } = instance.exports
-
-      print()
 
       console.log('2^2 =', square(2))
       console.log('3^2 =', square(3))
