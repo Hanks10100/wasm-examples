@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Fallback Example</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-touch-fullscreen" content="yes" />
+  <meta name="format-detection" content="telephone=no, email=no" />
+  <script src="./helper.js"></script>
+
+  <style>
+  table{border-collapse:collapse;}
+  th, td {
+    padding: 6px 18px; border: 1px solid #CCC;
+  }
+  </style>
+</head>
+
+<body>
+  <h1>Fibonacci Sequence</h1>
+  <div id="output">Running test...</div>
+
+  <script>
+    // const output = document.getElementById('output')
+
+    const result = []
+
+    startTest('./fib', (type, instance) => {
+      const { fib } = instance.exports
+
+      const counts = [15, 20, 25, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 45]
+
+      for (let i = 0; i < counts.length; ++i) {
+
+        const beg = performance.now()
+        fib(counts[i])
+        const end = performance.now()
+
+        if (!result[i]) {
+          result[i] = { n: counts[i] }
+        }
+        result[i][type] = end - beg
+      }
+    }).then(() => {
+      result.forEach(group => {
+        group.Ratio = group['asm.js'] / group.WebAssembly
+      })
+      output.innerHTML = ''
+      output.appendChild(createTable(result))
+    })
+  </script>
+</body>
+</html>
