@@ -15,4 +15,4 @@ compile_js "js/fib"
 compile_js "tail/fib"
 
 compile_c "fib"
-compile_c "tail/tail"
+compile_c "tail/fib"

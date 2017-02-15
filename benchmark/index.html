@@ -24,27 +24,27 @@
     // const output = document.getElementById('output')
 
     function startTest (fn) {
-      return loadJS('./fib/fib.js')
+      return loadJS('./js/fib.js')
         .then(instance => {
           return fn('javascript', instance)
         })
         .then(instance => {
-          return loadJS('./fib/fib.asm.js').then(ins => fn('asm.js', ins))
+          return loadJS('./js/fib.asm.js').then(ins => fn('asm.js', ins))
         })
         .then(instance => {
-          return loadWebAssembly('./fib/fib.wasm').then(ins => fn('asm.js -> wasm', ins))
+          return loadWebAssembly('./js/fib.wasm').then(ins => fn('asm.js -> wasm', ins))
         })
         .then(instance => {
-          return loadWebAssembly('./fib/fibc.wasm').then(ins => fn('C -> wasm', ins))
+          return loadWebAssembly('./fibc.wasm').then(ins => fn('C -> wasm', ins))
         })
         .then(instance => {
-          return loadJS('./fib/fib-tail.asm.js').then(ins => fn('asm.js (tail)', ins))
+          return loadJS('./tail/fib.asm.js').then(ins => fn('asm.js (tail)', ins))
         })
         .then(instance => {
-          return loadWebAssembly('./fib/fib-tail.wasm').then(ins => fn('asm.js -> wasm (tail)', ins))
+          return loadWebAssembly('./tail/fib.wasm').then(ins => fn('asm.js -> wasm (tail)', ins))
         })
         .then(instance => {
-          return loadWebAssembly('./fib/fib-tailc.wasm').then(ins => fn('C -> wasm (tail)', ins))
+          return loadWebAssembly('./tail/fibc.wasm').then(ins => fn('C -> wasm (tail)', ins))
         })
     }
 
@@ -74,9 +74,9 @@
 
       return instance
     }).then(() => {
-      result.forEach(group => {
-        group.Ratio = group['javascript'] / group['asm.js -> wasm']
-      })
+      // result.forEach(group => {
+      //   group.Ratio = group['javascript'] / group['asm.js -> wasm']
+      // })
       output.innerHTML = ''
       output.appendChild(createTable(result))
     })
