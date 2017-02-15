@@ -10,9 +10,7 @@
 
   <style>
   table{border-collapse:collapse;}
-  th, td {
-    padding: 6px 18px; border: 1px solid #CCC;
-  }
+  th, td { padding: 6px 18px; border: 1px solid #CCC; }
   </style>
 </head>
 
@@ -23,50 +21,47 @@
   <script>
     // const output = document.getElementById('output')
 
+    const result = []
     function startTest (fn) {
-      return loadJS('./matrix.js')
+      return loadJS('./matrix.src.js')
         .then(instance => {
-          return fn('mul', instance)
+          return fn('javascript', instance)
+        })
+        .then(instance => {
+          return loadWebAssembly('./matrix.wasm').then(ins => fn('WebAssembly', ins))
+        })
+        .then(() => {
+          result.forEach(group => {
+            group.Ratio = group['javascript'] / group['WebAssembly']
+          })
+          output.innerHTML = ''
+          output.appendChild(createTable(result))
         })
     }
 
-    const result = []
-
     startTest((type, instance) => {
-      const mul = instance.exports.mul || instance.exports._mul
-      const det = instance.exports.det || instance.exports._det
       const start = instance.exports.start || instance.exports._start
 
-      for (let i = 0; i < 1; ++i) {
+      const counts = [
+        10000, 20000, 30000, 50000, 80000,
+        100000, 200000, 300000, 500000, 800000
+      ];
+
+      for (let i = 0; i < counts.length; ++i) {
 
         const beg = performance.now()
-        // const res = mul([1, 0, 0, 1], [1, 2, 3, 4]) // [1, 2, 3, 4]
-        // const res = mul([1, 3, 2, 1], [1, 2, 3, 4]) // [10, 14, 5, 8]
-        // const res = det([1, 3, 2, 1], 2) // -5
-        // const res = det([1, 2, 3, 4], 2) // -2
-        // const res = det([ 1, 2, 3, 0, 2, 0, 0, 0, 3 ], 3) // 6
-        // const res = det([ 1, 2, 3, 0, 6, 2, 0, 1, 3 ], 3) // 16
-        // const res = det([ 1, 6, 5, 8, 2, 9, 4, 7, 3 ], 3) // 255
-        // const res = det([ 1, 6, -8, 2, -4, 3, 2, 0, 5, -7, 4, -1, 4, 3, 2, 1 ], 4) // -50
-        // const res = det([ -1, 2, 0, -4, 1, 5, 6, 4, 3, -8, 4, -7, 2, 1, 2, 3 ], 4) // 504
-        const res = start();
+        for (let j = 0; j < counts[i]; ++j) {
+          start();
+        }
         const end = performance.now()
 
-        console.log(res)
-
         if (!result[i]) {
-          result[i] = { }
+          result[i] = { n: counts[i] }
         }
         result[i][type] = end - beg
       }
 
       return instance
-    }).then(() => {
-      // result.forEach(group => {
-      //   group.Ratio = group['javascript'] / group['asm.js -> wasm']
-      // })
-      output.innerHTML = ''
-      output.appendChild(createTable(result))
     })
   </script>
 </body>

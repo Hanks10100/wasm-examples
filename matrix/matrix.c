@@ -1,5 +1,4 @@
 #define LENGTH 4
-// #include <stdlib.h>
 
 void mul (double *A, double *B) {
   int i, j, k;
