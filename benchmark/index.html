@@ -23,12 +23,42 @@
   <script>
     // const output = document.getElementById('output')
 
+    function startTest (fn) {
+      return loadJS('./fib/fib.js')
+        .then(instance => {
+          return fn('javascript', instance)
+        })
+        .then(instance => {
+          return loadJS('./fib/fib.asm.js').then(ins => fn('asm.js', ins))
+        })
+        .then(instance => {
+          return loadWebAssembly('./fib/fib.wasm').then(ins => fn('asm.js -> wasm', ins))
+        })
+        .then(instance => {
+          return loadWebAssembly('./fib/fibc.wasm').then(ins => fn('C -> wasm', ins))
+        })
+        .then(instance => {
+          return loadJS('./fib/fib-tail.asm.js').then(ins => fn('asm.js (tail)', ins))
+        })
+        .then(instance => {
+          return loadWebAssembly('./fib/fib-tail.wasm').then(ins => fn('asm.js -> wasm (tail)', ins))
+        })
+        .then(instance => {
+          return loadWebAssembly('./fib/fib-tailc.wasm').then(ins => fn('C -> wasm (tail)', ins))
+        })
+    }
+
     const result = []
 
-    startTest('./fib/fib', (type, instance) => {
-      const { fib } = instance.exports
+    startTest((type, instance) => {
+      const fib = instance.exports.fib || instance.exports._fib
 
-      const counts = [15, 20, 25, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40]
+      const counts = [
+        15, 20, 25, 30, 31, 32, 33,
+        34, 35, 36, 37, 38, 39, 40,
+        // 50, 60, 4200,
+        // 10000, 20000, 20100
+      ]
 
       for (let i = 0; i < counts.length; ++i) {
 
@@ -41,9 +71,11 @@
         }
         result[i][type] = end - beg
       }
+
+      return instance
     }).then(() => {
       result.forEach(group => {
-        group.Ratio = group['asm.js'] / group.WebAssembly
+        group.Ratio = group['javascript'] / group['asm.js -> wasm']
       })
       output.innerHTML = ''
       output.appendChild(createTable(result))

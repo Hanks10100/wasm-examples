@@ -17,7 +17,7 @@ function loadWebAssembly (url, imports = {}) {
     })
 }
 
-function loadAsmJS (url, imports = {}) {
+function loadJS (url, imports = {}) {
   return fetch(url)
     .then(response => response.text())
     .then(code => new Function('imports', `return (${code})()`))
@@ -56,14 +56,4 @@ function createTable (result) {
   table.appendChild(tbody)
 
   return table
-}
-
-function startTest (filename, fn) {
-  return loadAsmJS(`${filename}.js`).then(instance => {
-    fn('asm.js', instance)
-    if (typeof WebAssembly !== 'undefined') {
-      return loadWebAssembly(`${filename}.wasm`).then(ins => fn('WebAssembly', ins))
-    }
-    return instance
-  })
 }
