@@ -1,25 +1,22 @@
 #define LENGTH 4
-#include <stdlib.h>
+// #include <stdlib.h>
 
-double* mul (double *A, double *B) {
+void mul (double *A, double *B) {
   int i, j, k;
-  double* C = malloc((LENGTH * LENGTH)*sizeof(double *));
 
   for (i = 0; i < LENGTH; ++i) {
     for (j = 0; j < LENGTH; ++j) {
       for (k = 0; k < LENGTH; ++k) {
-        C[i*LENGTH + j] += A[i*LENGTH + k] * B[j + k*LENGTH];
+        A[i*LENGTH + j] += A[i*LENGTH + k] * B[j + k*LENGTH];
       }
     }
   }
-
-  return C;
 }
 
-double det(double *A, int n) {
-  int i,j,j1,j2;
+double det_n (double *A, int n) {
+  int i,j,x,y;
   double determinant = 0;
-  double *M = NULL;
+  double M[n*n];
 
   if (n == 1) {
     determinant = A[0];
@@ -27,20 +24,32 @@ double det(double *A, int n) {
     determinant = A[0] * A[3] - A[1] * A[2];
   } else {
     determinant = 0;
-    for (j1 = 0; j1 < n; j1++) {
-      M = malloc((n-1)*(n-1)*sizeof(double *));
+    for (x = 0; x < n; x++) {
       for (i = 1; i < n; i++) {
-        j2 = 0;
+        y = 0;
         for (j = 0; j < n; j++) {
-          if (j == j1) continue;
-          M[(i-1)*(n-1) + j2] = A[i*n + j];
-          j2++;
+          if (j == x) continue;
+          M[(i-1)*(n-1) + y] = A[i*n + j];
+          y++;
         }
       }
-      determinant += ((j1%2 == 0) ? 1 : -1) * A[j1] * det(M, n-1);
-      free(M);
+      determinant += ((x%2 == 0) ? 1 : -1) * A[x] * det_n(M, n-1);
     }
   }
 
-  return(determinant);
+  return (determinant);
+}
+
+double det (double * A) {
+  return det_n(A, LENGTH);
+}
+
+double start() {
+  double A[LENGTH*LENGTH] = { 2.1, 3.5, 0, -3.6, -4, 7.8, -1, 5, -4.7, 1.5, -3.2, 8.9, -0.31, 6.5, -9.7, 0.1 };
+  double B[LENGTH*LENGTH] = { 0, -3.6, 4, 2.1, -3.5, 4.7, 3.2, -1.5,- 0.1, 8.9, -0.31, 6.5, 9.7, -7.8, 1, -5 };
+  double C[LENGTH*LENGTH] = { -4, -4.7, 1.5, -2.1, -3.2, -8.9, -6.5, 9.7, 0.1, 0.31, -7.8, 1, 5, 3.5, 0, 3.6 };
+
+  mul(A, B);
+  mul(B, A);
+  return det(A) + det(B);
 }
