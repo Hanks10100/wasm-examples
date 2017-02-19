@@ -11,6 +11,18 @@
 
 <body>
   <h1>Call Javascript API</h1>
+  <h3 id="tips"></h3>
+  <p>The test result can be found in console.</p>
+
+  <script>
+    if (typeof WebAssembly !== 'undefined') {
+      tips.innerHTML = 'Your browser supports WebAssembly.'
+      tips.style.color = "#31EE31"
+    } else {
+      tips.innerHTML = 'Your browser doesn\'t support WebAssembly.'
+      tips.style.color = '#FF2828'
+    }
+  </script>
 
   <script>
     function loadWebAssembly(filename, imports = {}) {
@@ -31,27 +43,24 @@
         })
     }
 
-    var importObject = {
+    const imports = {
       Math,
       objects: {
-        count: 2333
+        count: 666
       },
       methods: {
         output (message) {
-          console.log('------------> ', message)
+          console.log(`-----> ${message} <-----`)
           return message
         }
       }
     }
 
-    loadWebAssembly('square.wasm', importObject).then(instance => {
-      const { print, square, test } = instance.exports
+    loadWebAssembly('./source.wasm', imports)
+      .then(instance => {
+        const { test } = instance.exports
 
-      test(666)
-
-      console.log('2^2 =', square(2))
-      console.log('3^2 =', square(3))
-      console.log('25^2 =', square(25))
+        test(2333)
       })
   </script>
 </body>
