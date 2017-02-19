@@ -1,26 +1,24 @@
 # WebAssembly 实践：如何写代码
 
-本文不讨论 WebAssembly 的发展将会怎样怎样，只是一步一步地教你怎么写 WebAssembly 的各种 demo。
+本文不讨论 WebAssembly 的发展，只是一步一步地教你怎么写 WebAssembly 的各种 demo。文中给出的例子我都放在 GitHub 中了（[仓库地址](https://github.com/Hanks10100/wasm-examples)），包含了编译脚本和编译好的可执行文件，只需再有一个支持 WebAssembly 的浏览器就可以直接运行。
 
 ## 配置开发调试环境
 
-> 下边给出的例子我都给出了编译好的可执行文件（[仓库地址](https://github.com/Hanks10100/wasm-examples)），只需再有一个支持 WebAssembly 的浏览器就可以直接运行。
-
 ### 安装编译工具
 
-**略。**
-
-参考官方 [Developer’s Guide](http://webassembly.org/getting-started/developers-guide/) 和 [Advanced Tools](http://webassembly.org/getting-started/advanced-tools/)。需要安装的工具有：
+**略。** 参考官方 [Developer’s Guide](http://webassembly.org/getting-started/developers-guide/) 和 [Advanced Tools](http://webassembly.org/getting-started/advanced-tools/)，需要安装的工具有：
 
 + [Emscripten](http://kripken.github.io/emscripten-site/)
 + [Binaryen](https://github.com/WebAssembly/binaryen)
 + [WABT (WebAssembly Binary Toolkit)](https://github.com/WebAssembly/wabt)
 
+> 安装过程挺繁琐的，得本地 clone 代码再编译。
+
 ### 安装浏览器
 
 作为一个新技术，之所以说 WebAssembly 前途明媚，不仅是因为 W3C 成立了专门的 [Webassembly Community Group](https://www.w3.org/community/webassembly/)，被标准认可；也是因为这次各大主流浏览器厂商（难得的）达成了一致，共同参与规范的讨论，在自家的浏览器里都实现了。
 
-体验新技术，建议使用激进版浏览器：
+体验新技术，建议使用激进版浏览器，最新版本中都已经支持了 WebAssembly。
 
 + 黄色的 Chrome ([Chrome Canary](https://www.google.com/chrome/browser/canary.html))
 + 紫色的 Safari ([Safari Technology Preview](https://developer.apple.com/safari/technology-preview/))
@@ -219,15 +217,19 @@ function loadWebAssembly (path, imports = {}) {
 }
 ```
 
+这个 `loadWebAssembly` 函数还接受第二个参数，表示要传递给 wasm 的变量，在初始化 WebAssembly 实例的时候，可以把一些接口传递给 wasm 代码。
+
 ### 在浏览器中的运行效果
 
-参考刚才用 C 语言写出来的项目（[代码地址](https://github.com/Hanks10100/wasm-examples/tree/master/cpp)），直接用浏览器打开 index.html 即可。能看到这样的输出：
+参考刚才用 C 语言写出来的项目（[代码地址](https://github.com/Hanks10100/wasm-examples/tree/master/cpp)），直接用浏览器打开 index.html 即可。能看到这样的输出（我使用的是 Chrome Canany 浏览器）：
 
 ![Preview in Browser](./output)
 
 如果你打开开发者工具的 Source 面板，能够看到 wasm 的源代码，浏览器已经将二进制转换成了对等的[文本指令]((http://webassembly.org/docs/text-format/))。
 
 ![View Source](./source)
+
+> 虽然是一个 wasm 文件，浏览器将它解析成了两个（也有可能更多），是因为我们输出了两个接口，每个文件都对应了一个接口的定义。可以理解为 Canary 浏览器为了方便看源码实现的 sourcemap 功能。
 
 ## 把 asm.js 编译成 WebAssembly
 
@@ -320,18 +322,91 @@ WebAssembly 除了定义了二进制格式以外，还定义了一份对等的[�
 
 在 js 里能调用 wasm 里定义的方法，反过来，wasm 里能不能调用 javascript 写的方法呢？能不能调用平台提供的方法（Web API）呢？
 
-当然是可以的。不过在 [MVP (Minimum Viable Product)](http://webassembly.org/docs/mvp/) 版本里实现的功能有限。前边在写 loader 的时候提到过，
+当然是可以的。不过在 [MVP (Minimum Viable Product)](http://webassembly.org/docs/mvp/) 版本里实现的功能有限。要想在 wasm 里调用 Web API，需要在创建 WebAssembly 实例的时候把 Web API 传递过去才可以。具体做法可以参考上边写的那个比较复杂的 loader 。
 
-目前想编译生成 wasm 文件，目前有下边几种方式：
+### 向 wasm 中传递 js 变量
 
-0. 所有能够编译生成 LLVM IR 的语言都能通过 Emscripten 生成 wasm 文件。
-0. 使用工具将语言编译成 wasm 同级别的文本指令，然后将其转换成 wasm 文件。
+在有了 `loadWebAssembly` 这个方法之后，就可以给 wasm 代码传递 js 变量和函数了。
 
+```js
+const imports = {
+  Math,
+  objects: {
+    count: 2333
+  },
+  methods: {
+    output (message) {
+      console.log(`-----> ${message} <-----`)
+      return message
+    }
+  }
+}
+
+loadWebAssembly('path/to/source.wasm', imports)
+  .then(instance => {
+    // ...
+  })
+```
+
+上边的代码里给 wasm 模块传递了三个对象： `Math` 、`objects` 、`methods`，分别对应了 Web API 、普通 js 对象、使用了 Web API 的 js 函数。属性名和变量名都并没什么限制，是可以随便起的，把它传递给 `loadWebAssembly` 方法的第二个参数就可以传递到 wasm 模块中了。
+
+真正实现传递的是 `loadWebAssembly` 的这行代码：
+
+```js
+new WebAssembly.Instance(module, imports)
+```
+
+### 获取并使用从 js 传递的变量
+
+既然 wasm 的代码最外层声明的是一个模块，我们能向外 `export` 接口，当然也可以 `import` 接口。
+
+```lisp
+(module
+  (import "objects" "count" (global $count f32))
+  (import "methods" "output" (func $output (param f32)))
+  (import "Math" "sin" (func $sin (param f32) (result f32)))
+  (export "test" (func $test))
+  (func $test (param $x f32)
+    (call $output (f32.const 42))
+    (call $output (get_global $count))
+    (call $output (get_local $x))
+    (call $output
+      (call $sin
+        (get_local $x)
+      )
+    )
+  )
+)
+```
+
+这段代码也是在最外层声明了一个 `module`，然后前三行是 `import` 语句。首先从 `objects` 中导入 `count` 属性，并且在代码里声明为全局的 `$count` 变量，格式是 32 位浮点数；然后从 `methods` 中导入 `output` 方法，声明为一个接受 32 位浮点数作为参数的函数 `$output`；最后从 `Math` 中导入 `sin` 方法，声明为一个接受 32 位浮点数作为参数的函数 `$sin`，返回值也是 32 位浮点数。这样一来就把 js 传递的对象转成了自身模块中可以使用变量。
+
+接下来是定义并且导出了一个 `test` 函数，接受一个 32 位浮点数作为参数。在 wast 的语法里 `call` 指令用来调用函数，`get_global` 用来获取全局变量的值，`get_local` 用来获取局部变量的值，只能在函数定义中使用。这样来看，`test` 函数 里执行了四条命令，首先调用 `$output` 输出了一个常量 42；然后调用 `$output` 输出全局变量 `$count` ，这个值是通过 `import` 获取来的；接着又输出了函数的参数 `$x`；最后输出了函数参数 `$x` 调用 Web API `$sin` 计算后的结果。
+
+### 编译执行
+
+通过 `west2wasm source.wast -o source.wasm` 可以生成 wasm 文件，然后使用 `loadWebAssembly` 编译 wasm 文件。
+
+```js
+loadWebAssembly('path/to/source.wasm', imports)
+  .then(instance => {
+    const { test } = instance.exports
+    test(2333)
+  })
+```
+
+会得到如下结果：
+
+```
+-----> 42 <-----
+-----> 666 <-----
+-----> 2333 <-----
+-----> 0.9332447648048401 <-----
+```
+
+代码虽然简单，但是实现了向 wasm 中传递变量，并且能在 wasm 中调用 `Math` 和 `console` 这种平台接口。如果想要绕过 javascript 直接给 wasm 传参，或者在 wasm 里直接引用 DOM API，就得看他们下一步的计划了。参考 [GC / DOM / Web API Integration](http://webassembly.org/docs/gc/) 。
 
 ## 结语
-
-
-他们官方 FAQ 里有个问题 [Is WebAssembly trying to replace JavaScript?](http://webassembly.org/docs/faq/#is-webassembly-trying-to-replace-javascript)
 
 根据这篇《如何画马》的教程，相信你很快就能用 WebAssembly 写出来 [Angry Bots](http://webassembly.org/demo/) 这样的游戏啦~ 💪
 
