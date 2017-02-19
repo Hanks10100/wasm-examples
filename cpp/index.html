@@ -11,6 +11,18 @@
 
 <body>
   <h1>Compile C to WebAssembly</h1>
+  <h3 id="tips"></h3>
+  <p>The test result can be found in console.</p>
+
+  <script>
+    if (typeof WebAssembly !== 'undefined') {
+      tips.innerHTML = 'Your browser supports WebAssembly.'
+      tips.style.color = "#31EE31"
+    } else {
+      tips.innerHTML = 'Your browser doesn\'t support WebAssembly.'
+      tips.style.color = '#FF2828'
+    }
+  </script>
 
   <script>
     function loadWebAssembly(filename, imports) {
