@@ -1,21 +1,23 @@
 # WebAssembly Examples
 
-## Background
+各种 WebAssembly 的例子。可以使用下列激进版浏览器运行。
 
-The [MVP](http://webassembly.org/docs/mvp/) (Minimum Viable Product) doesn't support to use `<script type="module">` to require a `.wasm` file yet ([They plan to do this](http://webassembly.org/docs/modules/#integration-with-es6-modules)). The only way to access WebAssembly on the Web is through an explicit [JavaScript API](http://webassembly.org/docs/js/).
++ 黄色的 Chrome ([Chrome Canary](https://www.google.com/chrome/browser/canary.html))
++ 紫色的 Safari ([Safari Technology Preview](https://developer.apple.com/safari/technology-preview/))
++ 深蓝色的 Firefox ([Firefox Nightly](https://www.mozilla.org/en-US/firefox/nightly/all/))，*依然需要开启 flag*
++ 改头换面的 IE ([Microsoft Edge](https://www.microsoft.com/en-us/windows/microsoft-edge))
 
-> TODO: write more.
+除了上边几个激进的浏览器，在主流版本里开启 flag 也是可以使用 WebAssembly ：
 
-## Getting Started
-
-> TODO: write more.
++ Chrome: 打开 `chrome://flags/#enable-webassembly`，选择 `enable`。
++ Firefox: 打开 `about:config` 将 `javascript.options.wasm` 设置为 `true`。
 
 ## Examples
 
-Each folder has a README inside. Here is an index:
+每个例子里都有单独的 README。
 
-+ [simple](./simple/): A simple example using asm.js.
-+ [cpp](./cpp/): A simple example using C/C++.
-+ [multi-wasm](./multi-wasm/): Using multiple wasm files.
-+ [js-api](./js-api/): Call javascript API in wasm.
-+ [nbody](./nbody/): Performance test (using C).
++ [simple](./simple/): 使用 asm.js 编译成 WebAssembly 的例子。
++ [cpp](./cpp/): 用 C/C++ 编译成 WebAssembly 的例子。
++ [multi-wasm](./multi-wasm/): 使用多个 wasm 文件。
++ [js-api](./js-api/): 在 wasm 中调用 javascript API。
++ [rust](./rust/): 把 Rust 编译成 WebAssembly 的例子。
