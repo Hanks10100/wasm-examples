@@ -219,6 +219,24 @@ function loadWebAssembly (path, imports = {}) {
 
 这个 `loadWebAssembly` 函数还接受第二个参数，表示要传递给 wasm 的变量，在初始化 WebAssembly 实例的时候，可以把一些接口传递给 wasm 代码。
 
+### 调用 wasm 导出的接口
+
+有了 `loadWebAssembly` 就可以调用 wasm 代码导出的接口了。
+
+```js
+loadWebAssembly('./math.wasm')
+  .then(instance => {
+    const add = instance.exports._add
+    const square = instance.exports._square
+
+    console.log('2 + 4 =', add(2, 4))
+    console.log('3^2 =', square(3))
+    console.log('(2 + 5)^2 =', square(add(2 + 5)))
+  })
+```
+
+> 比较奇怪的一点是，用 C/C++ 导出的模块，属性名上默认都带了 `_` 前缀，asm.js 转成了 wasm 模块就不带。
+
 ### 在浏览器中的运行效果
 
 参考刚才用 C 语言写出来的项目（[代码地址](https://github.com/Hanks10100/wasm-examples/tree/master/cpp)），直接用浏览器打开 index.html 即可。能看到这样的输出（我使用的是 Chrome Canany 浏览器）：
