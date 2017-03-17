@@ -33,10 +33,7 @@
     }
 
     loadWebAssembly('math.wasm').then(instance => {
-      const { add, square } = instance.exports
-
-      console.log('2 + 4 =', add(2, 4))
-      console.log('7 + 5 =', add(7, 5))
+      const { square } = instance.exports
 
       console.log('2^2 =', square(2))
       console.log('3^2 =', square(3))
