@@ -1,11 +1,3 @@
-function loadJS (url, imports = {}) {
-  return fetch(url)
-    .then(response => response.text())
-    .then(code => new Function('imports', `return (${code})()`))
-    .then(factory => ({ exports: factory(imports) }))
-}
-
-
 function createTable (result) {
   const table = document.createElement('table')
   const thead = document.createElement('thead')
