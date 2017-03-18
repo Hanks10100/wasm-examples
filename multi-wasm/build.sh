@@ -7,3 +7,6 @@ compile () {
 
 compile "inc"
 compile "square"
+
+echo
+echo " => done"

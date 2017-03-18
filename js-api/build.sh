@@ -1,7 +1,10 @@
 #!/bin/bash
 
 compile () {
-  wast2wasm $1.wast -o $1.wasm
+  wast2wasm -d $1.wast -o $1.wasm
 }
 
-compile "source"
+compile "test"
+
+echo
+echo " => done"

@@ -6,34 +6,16 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-touch-fullscreen" content="yes" />
   <meta name="format-detection" content="telephone=no, email=no" />
+  <script src="../loader.js"></script>
 </head>
 
 <body>
   <h1>Fibonacci Sequence</h1>
-  <h2 id="summary"></h2>
+  <h3 id="summary"></h3>
   <div id="output"></div>
 
   <script>
-    // const summary = document.getElementById('summary')
-    // const output = document.getElementById('output')
-
-    function load (filename) {
-      if (typeof WebAssembly !== 'undefined') {
-        summary.innerHTML = 'Run WebAssembly'
-        return fetch(`${filename}.wasm`)
-          .then(response => response.arrayBuffer())
-          .then(WebAssembly.instantiate)
-          .then(module => module.instance)
-      }
-
-      summary.innerHTML = 'Run asm.js fallback'
-      return fetch(`${filename}.js`)
-        .then(response => response.text())
-        .then(code => new Function(`return (${code})()`))
-        .then(factory => ({ exports: factory() }))
-    }
-
-    load('./fib').then(instance => {
+    loadWebAssembly('./fib.wasm').then(instance => {
       const { fib } = instance.exports
       const result = []
 
@@ -43,7 +25,7 @@
       }
       const end = performance.now()
 
-      summary.innerHTML += ` (${end - beg} ms)`
+      summary.innerHTML += `${end - beg} ms`
       result.forEach((value, index) => {
         output.innerHTML += `<div>fib(${index}) = ${value}</div>`
       })

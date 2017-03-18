@@ -7,6 +7,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <meta name="apple-touch-fullscreen" content="yes" />
   <meta name="format-detection" content="telephone=no, email=no" />
+  <script src="../loader.js"></script>
 </head>
 
 <body>
@@ -14,28 +15,8 @@
   <div id="output">Running test ...</div>
 
   <script>
-    // refs: https://github.com/kripken/emscripten/blob/65271b0ed8e77d07ced7f6873c3582b6b0ae2719/src/runtime.js#L352
-    function loadWebAssembly(filename, imports = {}) {
-      return fetch(filename)
-        .then(response => response.arrayBuffer())
-        .then(buffer => WebAssembly.compile(buffer))
-        .then(module => {
-          imports.env = imports.env || {}
-          imports.env.memoryBase = imports.env.memoryBase || 0
-          imports.env.tableBase = imports.env.tableBase || 0
-          if (!imports.env.memory) {
-            imports.env.memory = new WebAssembly.Memory({ initial: 256 })
-          }
-          if (!imports.env.table) {
-            imports.env.table = new WebAssembly.Table({ initial: 0, element: 'anyfunc' })
-          }
-          return new WebAssembly.Instance(module, imports)
-        })
-    }
 
-    // const output = document.getElementById('output')
-
-    loadWebAssembly('nbody.wasm').then(instance => {
+    loadWebAssembly('./nbody.wasm').then(instance => {
       const start = instance.exports._start
       const run = instance.exports._run
 

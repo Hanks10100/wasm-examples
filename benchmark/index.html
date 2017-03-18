@@ -6,6 +6,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-touch-fullscreen" content="yes" />
   <meta name="format-detection" content="telephone=no, email=no" />
+  <script src="../loader.js"></script>
   <script src="./helper.js"></script>
 
   <style>
@@ -37,15 +38,15 @@
         .then(instance => {
           return loadWebAssembly('./fibc.wasm').then(ins => fn('C -> wasm', ins))
         })
-        .then(instance => {
-          return loadJS('./tail/fib.asm.js').then(ins => fn('asm.js (tail)', ins))
-        })
-        .then(instance => {
-          return loadWebAssembly('./tail/fib.wasm').then(ins => fn('asm.js -> wasm (tail)', ins))
-        })
-        .then(instance => {
-          return loadWebAssembly('./tail/fibc.wasm').then(ins => fn('C -> wasm (tail)', ins))
-        })
+        // .then(instance => {
+        //   return loadJS('./tail/fib.asm.js').then(ins => fn('asm.js (tail)', ins))
+        // })
+        // .then(instance => {
+        //   return loadWebAssembly('./tail/fib.wasm').then(ins => fn('asm.js -> wasm (tail)', ins))
+        // })
+        // .then(instance => {
+        //   return loadWebAssembly('./tail/fibc.wasm').then(ins => fn('C -> wasm (tail)', ins))
+        // })
     }
 
     const result = []
@@ -74,9 +75,9 @@
 
       return instance
     }).then(() => {
-      // result.forEach(group => {
-      //   group.Ratio = group['javascript'] / group['asm.js -> wasm']
-      // })
+      result.forEach(group => {
+        group.Ratio = group['javascript'] / group['C -> wasm']
+      })
       output.innerHTML = ''
       output.appendChild(createTable(result))
     })

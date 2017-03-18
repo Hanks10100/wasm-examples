@@ -1,1 +1,11 @@
-(module  (export "add" (func $add))  (export "square" (func $square))  (func $add (param $x i32) (param $y i32) (result i32)    (return      (i32.add        (get_local $x)        (get_local $y)      )    )  )  (func $square (param $x i32) (result i32)    (return      (i32.mul        (get_local $x)        (get_local $x)      )    )  ))
+(module
+  (export "square" (func $square))
+  (func $square (param $x i32) (result i32)
+    (return
+      (i32.mul
+        (get_local $x)
+        (get_local $x)
+      )
+    )
+  )
+)

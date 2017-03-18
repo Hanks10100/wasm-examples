@@ -46,8 +46,6 @@
   (func (;2;) (type 1)
     block  ;; label = @1
       get_global 0
-      i32.const 0
-      i32.add
       set_global 2
       get_global 2
       i32.const 5242880
